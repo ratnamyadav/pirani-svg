@@ -10,10 +10,13 @@ export function PiraniSVG() {
   const { data, error, isPending, mutate } = api.pirani.getPiraniData.useMutation();
 
   const handleGetImages = () => {
-    if (!code.trim()) {
+    const trimmedCode = code.trim();
+    if (!trimmedCode) {
+      alert("Please enter a code");
       return;
     }
-    mutate({ code });
+    console.log("trimmedCode", trimmedCode);
+    mutate({ code: trimmedCode });
   };
 
   const handleDownloadSVG = async () => {
