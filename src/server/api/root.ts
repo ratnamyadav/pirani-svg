@@ -1,4 +1,5 @@
 import { postRouter } from "~/server/api/routers/post";
+import { piraniRouter } from "~/server/api/routers/pirani";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -8,6 +9,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   post: postRouter,
+  pirani: piraniRouter,
 });
 
 // export type definition of API
