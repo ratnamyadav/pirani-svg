@@ -35,7 +35,7 @@ export const piraniRouter = createTRPCRouter({
           throw new Error(`Failed to fetch data: ${response.status}`);
         }
         
-        const data: PiraniData = await response.json();
+        const data = await response.json() as PiraniData;
         return data;
       } catch (error) {
         throw new Error(error instanceof Error ? error.message : "Failed to fetch Pirani data");
