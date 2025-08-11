@@ -16,7 +16,13 @@ export function PiraniSVG() {
       return;
     }
     console.log("trimmedCode", trimmedCode);
-    mutate({ code: trimmedCode });
+    mutate({ code: trimmedCode }, {
+      onSuccess: (data) => {
+        if (!data) {
+          alert("No data found");
+        } 
+      }
+    });
   };
 
   const handleDownloadSVG = async () => {
@@ -54,7 +60,7 @@ export function PiraniSVG() {
             type="text"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            placeholder="e.g., -uImcw6d"
+            placeholder="e.g., 250808/-uImcw6d"
             className="w-full px-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-400"
           />
         </div>
