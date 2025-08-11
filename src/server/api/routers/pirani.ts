@@ -28,8 +28,7 @@ export const piraniRouter = createTRPCRouter({
         const month = (now.getMonth() + 1).toString().padStart(2, "0");
         const day = now.getDate().toString().padStart(2, "0");
         const dateCode = `${year}${month}${day}`;
-        
-        const response = await fetch(`https://pir-prod.pirani.life/co/${dateCode}/${input.code}`);
+        const response = await fetch(`https://pir-prod.pirani.life/co/${input.code.includes("/") ? "" : `${dateCode}/`}${input.code}`);
         
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.status}`);
