@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { api } from "~/trpc/react";
+import { DraggableLines } from "./draggable-lines";
 
 export function PiraniSVG() {
   const [code, setCode] = useState("");
@@ -81,13 +82,25 @@ export function PiraniSVG() {
         
         {data && (
           <div className="space-y-4 p-4 bg-white/5 rounded-lg">
+            <div>
+                <label htmlFor="code" className="block text-sm font-medium mb-2">
+                  Select Size:
+                </label>
+                <select className="w-full px-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-400">
+                  <option value="10oz">10oz</option>
+                  <option value="16oz">16oz</option>
+                  <option value="24oz">24oz</option>
+                </select>
+              </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
               <div>
                 <h3 className="font-semibold mb-2">Preview Image:</h3>
-                <img
-                  src={data.previewUrl}
+                <DraggableLines
+                  imageUrl={data.previewUrl}
                   alt={data.title}
-                  className="w-full h-auto rounded-lg border border-white/20"
+                  onHeightChange={(height) => console.log('Height:', height)}
+                  onBaselineChange={(y) => console.log('Baseline Y:', y)}
                 />
               </div>
               
