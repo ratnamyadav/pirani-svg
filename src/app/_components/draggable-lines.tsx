@@ -6,7 +6,7 @@ import { toast } from "sonner";
 const cupHeight = 94; // in mm
 const heightCupPX = 375;
 const heightOfImagePX = 592;
-const centerOfImageForYAxis = 388;
+const centerOfImageForYAxis = 377;
 
 interface DraggableLinesProps {
   imageUrl: string;
