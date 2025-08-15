@@ -92,7 +92,7 @@ export function PiraniSVG() {
                   <option value="24oz">24oz</option>
                 </select>
               </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               
               <div>
                 <h3 className="font-semibold mb-2">Preview Image:</h3>

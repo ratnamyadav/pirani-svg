@@ -1,6 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { toast } from "sonner";
+
+const cupHeight = 94; // in mm
+const heightCupPX = 375;
+const heightOfImagePX = 592;
+const centerOfImageForYAxis = 388;
 
 interface DraggableLinesProps {
   imageUrl: string;
@@ -68,6 +74,20 @@ export function DraggableLines({
 
   const height = baselineY - heightLineY;
 
+  // Convert pixels to millimeters
+  const pixelsToMm = (pixels: number) => {
+    // Using the ratio: cupHeight mm / heightCupPX px
+    return (pixels * cupHeight) / heightCupPX;
+  };
+
+  // Convert baseline Y from image coordinates to millimeters
+  const baselineYToMm = (baselineYPx: number) => {
+    // Calculate the distance from the center of the image
+    const distanceFromCenter = baselineYPx - centerOfImageForYAxis;
+    // Convert to millimeters
+    return pixelsToMm(distanceFromCenter);
+  };
+
   return (
     <div className="relative">
       <div 
@@ -97,12 +117,56 @@ export function DraggableLines({
         
         {/* Height measurement display */}
         <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
-          Height: {Math.round(height)}px
+          Height: {Math.round(height)}px ({pixelsToMm(height).toFixed(1)}mm)
+          <button
+            type="button"
+            title="Copy mm to clipboard"
+            onClick={() => {
+              void navigator.clipboard.writeText(pixelsToMm(height).toFixed(1));
+              void toast.success('Copied to clipboard');
+            }}
+            className="ml-2 inline-flex items-center px-1 py-0.5 rounded bg-white/10 hover:bg-white/20 transition-colors"
+            style={{ verticalAlign: 'middle' }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="none"
+              viewBox="0 0 20 20"
+              className="inline-block"
+            >
+              <rect x="7" y="3" width="10" height="14" rx="2" fill="currentColor" className="text-white/80"/>
+              <rect x="3" y="7" width="10" height="10" rx="2" fill="currentColor" className="text-white/40"/>
+            </svg>
+          </button>
         </div>
         
         {/* Baseline position display */}
         <div className="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
-          Baseline Y: {Math.round(baselineY)}px
+          Baseline Y: {Math.round(baselineY)}px ({baselineYToMm(baselineY).toFixed(1)}mm)
+          <button
+            type="button"
+            title="Copy mm to clipboard"
+            onClick={() => {
+              void navigator.clipboard.writeText(baselineYToMm(baselineY).toFixed(1));
+              void toast.success('Copied to clipboard');
+            }}
+            className="ml-2 inline-flex items-center px-1 py-0.5 rounded bg-white/10 hover:bg-white/20 transition-colors"
+            style={{ verticalAlign: 'middle' }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="none"
+              viewBox="0 0 20 20"
+              className="inline-block"
+            >
+              <rect x="7" y="3" width="10" height="14" rx="2" fill="currentColor" className="text-white/80"/>
+              <rect x="3" y="7" width="10" height="10" rx="2" fill="currentColor" className="text-white/40"/>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
