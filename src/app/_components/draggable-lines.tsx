@@ -3,10 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 
-const cupHeight = 94; // in mm
-const heightCupPX = 375;
-const heightOfImagePX = 592;
-const centerOfImageForYAxis = 377;
 
 interface DraggableLinesProps {
   imageUrl: string;
@@ -22,10 +18,35 @@ export function DraggableLines({
   onBaselineChange 
 }: DraggableLinesProps) {
   const [heightLineY, setHeightLineY] = useState(50);
-  const [baselineY, setBaselineY] = useState(200);
+  const [baselineY, setBaselineY] = useState(377);
   const [isDraggingHeight, setIsDraggingHeight] = useState(false);
   const [isDraggingBaseline, setIsDraggingBaseline] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const cupHeight = 94; // in mm
+  const heightCupPX = 375;
+  const heightOfImagePX = 592;
+  const centerOfImageForYAxis = 377;
+
+  console.log(heightOfImagePX);
+
+  // Get actual container height for calculations
+  const [actualContainerHeight, setActualContainerHeight] = useState(0);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const updateHeight = () => {
+        const height = containerRef.current?.getBoundingClientRect().height ?? 0;
+        setActualContainerHeight(height);
+        console.log('Actual container height:', height);
+      };
+      
+      updateHeight();
+      
+      // Update height on window resize
+      window.addEventListener('resize', updateHeight);
+      return () => window.removeEventListener('resize', updateHeight);
+    }
+  }, []);
 
   const handleMouseDown = (lineType: 'height' | 'baseline') => {
     if (lineType === 'height') {
@@ -77,13 +98,13 @@ export function DraggableLines({
   // Convert pixels to millimeters
   const pixelsToMm = (pixels: number) => {
     // Using the ratio: cupHeight mm / heightCupPX px
-    return (pixels * cupHeight) / heightCupPX;
+    return (pixels * cupHeight) / (heightCupPX / heightOfImagePX * actualContainerHeight);
   };
 
   // Convert baseline Y from image coordinates to millimeters
   const baselineYToMm = (baselineYPx: number) => {
     // Calculate the distance from the center of the image
-    const distanceFromCenter = baselineYPx - centerOfImageForYAxis;
+    const distanceFromCenter = baselineYPx - centerOfImageForYAxis / heightOfImagePX * actualContainerHeight;
     // Convert to millimeters
     return pixelsToMm(distanceFromCenter);
   };
@@ -123,7 +144,11 @@ export function DraggableLines({
             title="Copy mm to clipboard"
             onClick={() => {
               void navigator.clipboard.writeText(pixelsToMm(height).toFixed(1));
-              void toast.success('Copied to clipboard');
+              try {
+                toast.success('Copied to clipboard');
+              } catch {
+                console.log('Copied to clipboard');
+              }
             }}
             className="ml-2 inline-flex items-center px-1 py-0.5 rounded bg-white/10 hover:bg-white/20 transition-colors"
             style={{ verticalAlign: 'middle' }}
@@ -150,7 +175,11 @@ export function DraggableLines({
             title="Copy mm to clipboard"
             onClick={() => {
               void navigator.clipboard.writeText(baselineYToMm(baselineY).toFixed(1));
-              void toast.success('Copied to clipboard');
+              try {
+                toast.success('Copied to clipboard');
+              } catch {
+                console.log('Copied to clipboard');
+              }
             }}
             className="ml-2 inline-flex items-center px-1 py-0.5 rounded bg-white/10 hover:bg-white/20 transition-colors"
             style={{ verticalAlign: 'middle' }}
@@ -167,6 +196,11 @@ export function DraggableLines({
               <rect x="3" y="7" width="10" height="10" rx="2" fill="currentColor" className="text-white/40"/>
             </svg>
           </button>
+        </div>
+
+        {/* Debug info - container height */}
+        <div className="absolute top-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
+          Container: {Math.round(actualContainerHeight)}px
         </div>
       </div>
     </div>
