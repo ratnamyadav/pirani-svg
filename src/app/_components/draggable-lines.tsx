@@ -27,7 +27,6 @@ export function DraggableLines({
   const heightOfImagePX = 592;
   const centerOfImageForYAxis = 377;
 
-  console.log(heightOfImagePX);
 
   // Get actual container height for calculations
   const [actualContainerHeight, setActualContainerHeight] = useState(0);
@@ -119,7 +118,7 @@ export function DraggableLines({
         <img
           src={imageUrl}
           alt={alt}
-          className="w-full h-auto rounded-lg border border-white/20"
+          className="w-full aspect-square rounded-lg border border-white/20"
         />
         
         {/* Height measurement line (top) */}
@@ -169,12 +168,12 @@ export function DraggableLines({
         
         {/* Baseline position display */}
         <div className="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
-          Baseline Y: {Math.round(baselineY)}px ({baselineYToMm(baselineY).toFixed(1)}mm)
+          Center Y: {Math.round(baselineY - height / 2)}px ({baselineYToMm(baselineY - height / 2).toFixed(1)}mm)
           <button
             type="button"
             title="Copy mm to clipboard"
             onClick={() => {
-              void navigator.clipboard.writeText(baselineYToMm(baselineY).toFixed(1));
+              void navigator.clipboard.writeText(baselineYToMm(baselineY - height / 2).toFixed(1));
               try {
                 toast.success('Copied to clipboard');
               } catch {
