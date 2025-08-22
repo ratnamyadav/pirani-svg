@@ -7,6 +7,7 @@ import { DraggableLines } from "./draggable-lines";
 export function PiraniSVG() {
   const [code, setCode] = useState("");
   const [isDownloading, setIsDownloading] = useState(false);
+  const [size, setSize] = useState<"10oz" | "16oz" | "26oz">("10oz");
 
   const { data, error, isPending, mutate } = api.pirani.getPiraniData.useMutation();
 
@@ -86,10 +87,10 @@ export function PiraniSVG() {
                 <label htmlFor="code" className="block text-sm font-medium mb-2">
                   Select Size:
                 </label>
-                <select className="w-full px-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-400">
+                <select value={size} onChange={(e) => setSize(e.target.value as "10oz" | "16oz" | "26oz")} className="w-full px-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-400">
                   <option value="10oz">10oz</option>
                   <option value="16oz">16oz</option>
-                  <option value="24oz">24oz</option>
+                  <option value="26oz">26oz</option>
                 </select>
               </div>
             <div className="grid grid-cols-1 gap-4">
@@ -97,6 +98,7 @@ export function PiraniSVG() {
               <div>
                 <h3 className="font-semibold mb-2">Preview Image:</h3>
                 <DraggableLines
+                  size={size}
                   imageUrl={data.previewUrl}
                   alt={data.title}
                   onHeightChange={(height) => console.log('Height:', height)}

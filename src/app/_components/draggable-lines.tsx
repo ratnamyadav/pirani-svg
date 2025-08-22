@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 
 interface DraggableLinesProps {
+  size: '10oz' | '16oz' | '26oz';
   imageUrl: string;
   alt: string;
   onHeightChange?: (height: number) => void;
@@ -12,6 +13,7 @@ interface DraggableLinesProps {
 }
 
 export function DraggableLines({ 
+  size,
   imageUrl, 
   alt, 
   onHeightChange, 
@@ -22,7 +24,11 @@ export function DraggableLines({
   const [isDraggingHeight, setIsDraggingHeight] = useState(false);
   const [isDraggingBaseline, setIsDraggingBaseline] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const cupHeight = 94; // in mm
+  const cupHeight = {
+    '10oz': 94, // in mm 10oz
+    '16oz': 110, // in mm 16oz
+    '26oz': 130, // in mm 26oz
+  };
   const heightCupPX = 375;
   const heightOfImagePX = 592;
   const centerOfImageForYAxis = 377;
@@ -97,7 +103,7 @@ export function DraggableLines({
   // Convert pixels to millimeters
   const pixelsToMm = (pixels: number) => {
     // Using the ratio: cupHeight mm / heightCupPX px
-    return (pixels * cupHeight) / (heightCupPX / heightOfImagePX * actualContainerHeight);
+    return (pixels * cupHeight[size]) / (heightCupPX / heightOfImagePX * actualContainerHeight);
   };
 
   // Convert baseline Y from image coordinates to millimeters
