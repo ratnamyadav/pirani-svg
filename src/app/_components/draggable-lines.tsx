@@ -19,23 +19,36 @@ export function DraggableLines({
   onHeightChange, 
   onBaselineChange 
 }: DraggableLinesProps) {
-  const [heightLineY, setHeightLineY] = useState(50);
-  const [baselineY, setBaselineY] = useState(377);
   const [isDraggingHeight, setIsDraggingHeight] = useState(false);
   const [isDraggingBaseline, setIsDraggingBaseline] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const topLineY = 58;
+  const topLineYPX = {
+    '10oz': 195,
+    '16oz': 120,
+    '26oz': 72,
+  };
+  const baselineYPX = {
+    '10oz': 500,
+    '16oz': 500,
+    '26oz': 500,
+  };
   const cupHeight = {
     '10oz': 94, // in mm 10oz
     '16oz': 110, // in mm 16oz
     '26oz': 130, // in mm 26oz
   };
-  const heightCupPX = 375;
-  const heightOfImagePX = 592;
-  const centerOfImageForYAxis = 377;
-
-
+  const cupHeightPX = {
+    '10oz': 458,
+    '16oz': 548,
+    '26oz': 607,
+  };
   // Get actual container height for calculations
   const [actualContainerHeight, setActualContainerHeight] = useState(0);
+
+  const heightOfImagePX = 720;
+  const [heightLineY, setHeightLineY] = useState(topLineYPX[size]);
+  const [baselineY, setBaselineY] = useState(baselineYPX[size]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -102,12 +115,16 @@ export function DraggableLines({
 
   // Convert pixels to millimeters
   const pixelsToMm = (pixels: number) => {
-    // Using the ratio: cupHeight mm / heightCupPX px
-    return (pixels * cupHeight[size]) / (heightCupPX / heightOfImagePX * actualContainerHeight);
+    const cupHeightRatioToPX = cupHeightPX[size] / cupHeight[size]
+    // Using the ratio: cupHeight mm / cupHeightPX px
+    return (pixels) / (cupHeightRatioToPX / heightOfImagePX * actualContainerHeight);
   };
 
   // Convert baseline Y from image coordinates to millimeters
   const baselineYToMm = (baselineYPx: number) => {
+    const cupHeightRatioToPX = cupHeightPX[size] / cupHeight[size]
+    const heightOfImageRatio = actualContainerHeight / heightOfImagePX;
+    const centerOfImageForYAxis = topLineYPX[size] * heightOfImageRatio + topLineY * cupHeightRatioToPX;
     // Calculate the distance from the center of the image
     const distanceFromCenter = baselineYPx - centerOfImageForYAxis / heightOfImagePX * actualContainerHeight;
     // Convert to millimeters
@@ -129,17 +146,27 @@ export function DraggableLines({
         
         {/* Height measurement line (top) */}
         <div
-          className="absolute w-full h-0.5 bg-red-500 cursor-ns-resize"
-          style={{ top: `${heightLineY}px` }}
+          className="absolute w-full"
+          style={{ top: `${heightLineY - 8}px`, height: '16px', cursor: 'ns-resize' }}
           onMouseDown={() => handleMouseDown('height')}
-        />
+        >
+          <div
+            className="w-full h-0.5 bg-red-500 pointer-events-none"
+            style={{ position: 'absolute', top: '50%', left: 0, transform: 'translateY(-50%)' }}
+          />
+        </div>
         
         {/* Baseline measurement line (bottom) */}
         <div
-          className="absolute w-full h-0.5 bg-red-500 cursor-ns-resize"
-          style={{ top: `${baselineY}px` }}
+          className="absolute w-full"
+          style={{ top: `${baselineY - 8}px`, height: '16px', cursor: 'ns-resize' }}
           onMouseDown={() => handleMouseDown('baseline')}
-        />
+        >
+          <div
+            className="w-full h-0.5 bg-red-500 pointer-events-none"
+            style={{ position: 'absolute', top: '50%', left: 0, transform: 'translateY(-50%)' }}
+          />
+        </div>
         
         {/* Height measurement display */}
         <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
@@ -206,6 +233,11 @@ export function DraggableLines({
         {/* Debug info - container height */}
         <div className="absolute top-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
           Container: {Math.round(actualContainerHeight)}px
+        </div>
+
+        {/* Debug info - container bottom mm */}
+        <div className="absolute bottom-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
+          Container bottom mm: {baselineYToMm(baselineY).toFixed(1)}mm
         </div>
       </div>
     </div>

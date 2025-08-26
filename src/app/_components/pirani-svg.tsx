@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { api } from "~/trpc/react";
 import { DraggableLines } from "./draggable-lines";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 
 export function PiraniSVG() {
   const [code, setCode] = useState("");
@@ -23,6 +24,14 @@ export function PiraniSVG() {
         if (!data) {
           alert("No data found");
         } 
+
+        if (data.previewUrl.includes('10oz')) {
+          setSize('10oz');
+        } else if (data.previewUrl.includes('16oz')) {
+          setSize('16oz');
+        } else if (data.previewUrl.includes('26oz')) {
+          setSize('26oz');
+        }
       }
     });
   };
@@ -49,10 +58,42 @@ export function PiraniSVG() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-6 bg-white/10 rounded-xl backdrop-blur-sm">
+    <div className="w-full mx-auto p-6 bg-white/10 rounded-xl backdrop-blur-sm">
       <h2 className="text-3xl font-bold text-center mb-6">Pirani SVG Downloader</h2>
-      
+      <div className="grid grid-cols-2 gap-4">
+      <div>
+        <h3 className="font-semibold mb-2">Preview Image:</h3>
+        {data ? (
+          <DraggableLines                
+            size={size}
+            imageUrl={data.previewUrl}
+            alt={data.title}
+            onHeightChange={(height) => console.log('Height:', height)}
+            onBaselineChange={(y) => console.log('Baseline Y:', y)}
+          />
+        ) : (
+          <div className="aspect-square w-full bg-white/10 rounded-lg flex items-center justify-center">
+            <span className="text-white/60">Preview will appear here</span>
+          </div>
+        )}
+      </div>
       <div className="space-y-4">
+        <div>
+          <label htmlFor="preselected-codes" className="block text-sm font-medium mb-2">
+            Preselected Codes:
+          </label>
+          <select
+            id="preselected-codes"
+            className="w-full px-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+          >
+            <option value="">Select a code...</option>
+            <option value="250808/-uImcw6d">250808/-uImcw6d 26oz</option>
+            <option value="250815/fmwAgFYq">250815/fmwAgFYq 10oz</option>
+            <option value="250825/Xslfyd1k">250825/Xslfyd1k 16oz</option>
+          </select>
+        </div>
         <div>
           <label htmlFor="code" className="block text-sm font-medium mb-2">
             Enter Code:
@@ -83,38 +124,35 @@ export function PiraniSVG() {
         
         {data && (
           <div className="space-y-4 p-4 bg-white/5 rounded-lg">
-            <div>
+            <div className="w-full">
                 <label htmlFor="code" className="block text-sm font-medium mb-2">
                   Select Size:
                 </label>
-                <select value={size} onChange={(e) => setSize(e.target.value as "10oz" | "16oz" | "26oz")} className="w-full px-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-400">
-                  <option value="10oz">10oz</option>
-                  <option value="16oz">16oz</option>
-                  <option value="26oz">26oz</option>
-                </select>
+                <Select
+                  value={size}
+                  onValueChange={(value) => setSize(value as "10oz" | "16oz" | "26oz")}
+                  
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Size" />
+                  </SelectTrigger>
+                  <SelectContent className="w-full">
+                    <SelectItem value="10oz">10oz</SelectItem>
+                    <SelectItem value="16oz">16oz</SelectItem>
+                    <SelectItem value="26oz">26oz</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             <div className="grid grid-cols-1 gap-4">
-              
-              <div>
-                <h3 className="font-semibold mb-2">Preview Image:</h3>
-                <DraggableLines
-                  size={size}
-                  imageUrl={data.previewUrl}
-                  alt={data.title}
-                  onHeightChange={(height) => console.log('Height:', height)}
-                  onBaselineChange={(y) => console.log('Baseline Y:', y)}
-                />
-              </div>
-              
               <div>
                 <h3 className="font-semibold mb-2">SVG:</h3>
-                <div className="bg-white/10 p-4 rounded-lg border border-white/20">
+                {/* <div className="bg-white/10 p-4 rounded-lg border border-white/20">
                   <img
                     src={data.svgUrl}
                     alt="SVG Preview"
                     className="w-full h-auto"
                   />
-                </div>
+                </div> */}
                 <button
                   disabled={isDownloading}
                   onClick={handleDownloadSVG}
@@ -133,6 +171,7 @@ export function PiraniSVG() {
             </div>
           </div>
         )}
+      </div>
       </div>
     </div>
   );
