@@ -14,13 +14,13 @@ const CUP_SIZES = {
   '16oz': {
     topLineYPX: 120,
     baselineYPX: 500,
-    cupHeight: 110, // in mm
+    cupHeight: 125, // in mm
     cupHeightPX: 548,
   },
   '26oz': {
     topLineYPX: 72,
     baselineYPX: 500,
-    cupHeight: 130, // in mm
+    cupHeight: 177, // in mm
     cupHeightPX: 607,
   },
 } as const;
