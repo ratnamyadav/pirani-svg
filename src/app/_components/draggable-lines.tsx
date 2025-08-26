@@ -22,7 +22,7 @@ export function DraggableLines({
   const [isDraggingHeight, setIsDraggingHeight] = useState(false);
   const [isDraggingBaseline, setIsDraggingBaseline] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const topLineY = 58;
+  const topLineY = 58 // in mm;
   const topLineYPX = {
     '10oz': 195,
     '16oz': 120,
@@ -43,12 +43,16 @@ export function DraggableLines({
     '16oz': 548,
     '26oz': 607,
   };
+
+  const centerOfCupInPx = topLineYPX[size] + topLineY * cupHeightPX[size] / cupHeight[size]; // This is for the container size of 720px
+  console.log('centerOfCupInPx', centerOfCupInPx);
   // Get actual container height for calculations
   const [actualContainerHeight, setActualContainerHeight] = useState(0);
 
   const heightOfImagePX = 720;
   const [heightLineY, setHeightLineY] = useState(topLineYPX[size]);
-  const [baselineY, setBaselineY] = useState(baselineYPX[size]);
+  // const [baselineY, setBaselineY] = useState(baselineYPX[size]);
+  const [baselineY, setBaselineY] = useState(centerOfCupInPx);
 
   useEffect(() => {
     if (containerRef.current) {
