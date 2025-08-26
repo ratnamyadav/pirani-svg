@@ -25,7 +25,7 @@ const CUP_SIZES = {
   },
 } as const;
 
-const TOP_LINE_Y = 58; // in mm
+const TOP_LINE_Y = 54; // in mm
 const HEIGHT_OF_IMAGE_PX = 720;
 
 interface DraggableLinesProps {
