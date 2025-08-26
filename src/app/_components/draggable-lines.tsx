@@ -51,7 +51,7 @@ const useCupCalculations = (size: keyof typeof CUP_SIZES, actualContainerHeight:
       const cupHeightRatioToPX = cupData.cupHeightPX / cupData.cupHeight;
       const heightOfImageRatio = actualContainerHeight / HEIGHT_OF_IMAGE_PX;
       const centerOfImageForYAxis = cupData.topLineYPX * heightOfImageRatio + TOP_LINE_Y * cupHeightRatioToPX;
-      const distanceFromCenter = baselineYPx - centerOfImageForYAxis / HEIGHT_OF_IMAGE_PX * actualContainerHeight;
+      const distanceFromCenter =  centerOfImageForYAxis / HEIGHT_OF_IMAGE_PX * actualContainerHeight - baselineYPx;
       return pixelsToMm(distanceFromCenter);
     };
 
@@ -112,12 +112,12 @@ const MeasurementDisplay = ({
 }: { 
   label: string; 
   pixelValue: number; 
-  mmValue: number; 
+  mmValue?: number; 
   position: 'top-2 right-2' | 'bottom-2 right-2' | 'top-2 left-2' | 'bottom-2 left-2'; 
 }) => (
   <div className={`absolute ${position} bg-black/70 text-white px-2 py-1 rounded text-sm`}>
-    {label}: {Math.round(pixelValue)}px ({mmValue.toFixed(1)}mm)
-    <CopyButton value={mmValue.toFixed(1)} label="mm" />
+    {label}: {Math.round(pixelValue)}px{" "}
+    {mmValue && <>({mmValue.toFixed(1)}mm) <CopyButton value={mmValue.toFixed(1)} label="mm" /></>}
   </div>
 );
 
@@ -270,7 +270,7 @@ export function DraggableLines({
         <MeasurementDisplay
           label="Container"
           pixelValue={actualContainerHeight}
-          mmValue={0}
+          // mmValue={0}
           position="top-2 left-2"
         />
 
