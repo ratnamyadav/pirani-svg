@@ -6,19 +6,19 @@ import { toast } from "sonner";
 // Constants moved to top for better maintainability
 const CUP_SIZES = {
   '10oz': {
-    topLineYPX: 195,
+    topLineYPX: 48.5,
     baselineYPX: 500,
     cupHeight: 94, // in mm
     cupHeightPX: 458,
   },
   '16oz': {
-    topLineYPX: 120,
+    topLineYPX: 51.5,
     baselineYPX: 500,
     cupHeight: 125, // in mm
     cupHeightPX: 548,
   },
   '26oz': {
-    topLineYPX: 72,
+    topLineYPX: 48.5,
     baselineYPX: 500,
     cupHeight: 177, // in mm
     cupHeightPX: 607,
