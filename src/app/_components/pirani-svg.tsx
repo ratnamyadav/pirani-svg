@@ -64,7 +64,8 @@ export function PiraniSVG() {
       <div>
         <h3 className="font-semibold mb-2">Preview Image:</h3>
         {data ? (
-          <DraggableLines                
+          <DraggableLines
+            key={size}
             size={size}
             imageUrl={data.previewUrl}
             alt={data.title}

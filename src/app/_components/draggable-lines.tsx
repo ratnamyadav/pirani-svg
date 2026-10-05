@@ -174,12 +174,6 @@ export function DraggableLines({
     return () => window.removeEventListener('resize', updateHeight);
   }, []);
 
-  // Update initial positions when size changes
-  useEffect(() => {
-    setHeightLineY(topLineYPX);
-    setBaselineY(centerOfCupInPx);
-  }, [topLineYPX, centerOfCupInPx]);
-
   const handleMouseDown = useCallback((lineType: 'height' | 'baseline') => {
     if (lineType === 'height') {
       setIsDraggingHeight(true);
